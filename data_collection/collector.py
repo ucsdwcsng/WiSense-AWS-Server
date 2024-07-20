@@ -24,13 +24,13 @@ def callback(msg):
             "time_stamp":{'N':str(msg.header.stamp.secs) + str(msg.header.stamp.nsecs)},
             "msg_id": {'N' :str(msg.msg_id)}, 
             "rx_id": {'S' :msg.rx_id},  
-            "header": {'M':
-                    {
-                    # "seq": {'N':str(msg.header.seq)},
-                    "stamp" : { "M" : { "secs" : { "N" : str(msg.header.stamp.secs)},"nsecs" : { "N" : str(msg.header.stamp.nsecs) } } },
-                    "frame_id" : { "S" : msg.header.frame_id } 
-                    }
-                    },
+            # "header": {'M':
+            #         {
+            #         # "seq": {'N':str(msg.header.seq)},
+            #         "stamp" : { "M" : { "secs" : { "N" : str(msg.header.stamp.secs)},"nsecs" : { "N" : str(msg.header.stamp.nsecs) } } },
+            #         "frame_id" : { "S" : msg.header.frame_id } 
+            #         }
+            #         },
             "ap_id": {'N': str(msg.ap_id)},
             "txmac": {'S' :mac_to_str(msg.txmac)},
             "chan": {'N' :str(msg.chan)},
@@ -51,15 +51,13 @@ def callback(msg):
     size = sys.getsizeof(msg)
     total_size += size
 
-    # print('count = ' + str(count) +  ' item seq ' + str(msg.seq_num)+ ' of size = ' + str(size) + ' inserted, size count = ' + str(total_size) + '(KB)')
     print('count = ' + str(count) +  ' item seq ' + str(msg.seq_num)+ ' inserted to request batch' )
-    # callback_table_put(single_item)
+    callback_table_put(single_item)
     write_file(msg.csi_real, msg.csi_imag)
     
 def write_file(real_list,imag_list):
     global count, CONST, file_name
     array = real_list + imag_list
-    print("size of array is " + str(len(array)))
 
     # Convert the array to a binary format
     binary_data = struct.pack('d' * len(array), *array)
@@ -102,7 +100,7 @@ if __name__ == '__main__':
     count = 0
     total_size = 0
     item_batch = {
-        "DB_test_2": []
+        f'{CONST.DB_NAME}': []
     }
     file_name = time.time()
     listener()
