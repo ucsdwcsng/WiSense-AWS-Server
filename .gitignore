@@ -1,0 +1,6 @@
+/data_collection/binary_data/*
+data_collection/*
+!/data_collection/binary_data
+!_CONST.py
+!collector.py
+!binary_reader.py

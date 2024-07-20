@@ -1,9 +1,6 @@
 import struct
+from _CONST import _Const
 
-class _Const(object):
-    MAX_BINARY_ENTRY_COUNT = 100
-    COL_PER_ROW = 1024
-    ROW_PER_FILE = 100
 
 def read_floats_from_file_with_metadata(filename):
     floats = []
@@ -46,6 +43,5 @@ if __name__ == '__main__':
         offset = i*CONST.COL_PER_ROW
         parsed_list.append(all_floats_list[offset :offset + CONST.COL_PER_ROW])
 
-    # print(all_floats_list[99*CONST.COL_PER_ROW:100*CONST.COL_PER_ROW])
-    # print(all_floats_list)
-    # print(len(parsed_list))
+    print(parsed_list)
+    print(len(parsed_list))
