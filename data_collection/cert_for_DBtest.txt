@@ -1,0 +1,20 @@
+for zhh013:
+
+    access key: 
+    AKIAXHETCRJAIX7NR266
+
+    secrete key:
+    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
+
+
+
+
+for zhh013@wcsng:
+
+  DB_testing_1:
+
+    access key: 
+    AKIA3K7SUOVXBKCCTFW7
+
+    secrete key:
+    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
