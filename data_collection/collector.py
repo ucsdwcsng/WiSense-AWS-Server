@@ -1,5 +1,5 @@
 import boto3 
-import sys, rospy, time, struct, csv, botocore
+import sys, rospy, time, struct, csv, botocore, os
 from rf_msgs.msg import Wifi
 from std_msgs.msg import String
 from decimal import *
@@ -17,6 +17,7 @@ def callback(msg):
     # # conver types from float to Decimal
     # real_list = tuple([Decimal(each) for each in msg.csi_real])
     # imag_list = tuple([Decimal(each) for each in msg.csi_imag])
+
     if error_flag:
         print("error detected")
         exit(1) 
@@ -24,21 +25,24 @@ def callback(msg):
     single_item = {
             "seq": {'N':str(msg.header.seq)},
             "time_stamp":{'N':str(msg.header.stamp.secs) + str(msg.header.stamp.nsecs)},
-            # "msg_id": {'N' :str(msg.msg_id)}, 
-            # "rx_id": {'S' :msg.rx_id},  
-            # "ap_id": {'N': str(msg.ap_id)},
-            # "txmac": {'S' :mac_to_str(msg.txmac)},
-            # "chan": {'N' :str(msg.chan)},
-            # "n_sub": {'N' :str(msg.n_sub)},
-            # "n_rows": {'N' :str(msg.n_rows)},
-            # "n_cols": {'N' :str(msg.n_cols)},
-            # "bw": {'N' :str(msg.bw)},
-            # "mcs": {'N' :str(msg.mcs)},
-            # "rssi":{'N' :str( msg.rssi)},
-            # "fc": {'N' :str(msg.fc)},
-            # "seq_num": {'N' :str(msg.seq_num)},
-            # "file_name": {'S': f"{file_name}"},
-            # "offset_in_file":{'N': str(count % CONST.ROW_PER_FILE)}
+            "msg_id": {'N' :str(msg.msg_id)}, 
+            "rx_id": {'S' :msg.rx_id},  
+            "ap_id": {'N': str(msg.ap_id)},
+            "txmac": {'S' :mac_to_str(msg.txmac)},
+            "chan": {'N' :str(msg.chan)},
+            "n_sub": {'N' :str(msg.n_sub)},
+            "n_rows": {'N' :str(msg.n_rows)},
+            "n_cols": {'N' :str(msg.n_cols)},
+            "bw": {'N' :str(msg.bw)},
+            "mcs": {'N' :str(msg.mcs)},
+            "rssi":{'N' :str( msg.rssi)},
+            "fc": {'N' :str(msg.fc)},
+            "seq_num": {'N' :str(msg.seq_num)},
+            "file_name": {'S': f"{file_name}"},
+            "offset_in_file":{'N': str(count % CONST.ROW_PER_FILE)}
+
+            # NO csi will be stored on DB!
+
             # "csi_real": real_list,
             # "csi_imag": imag_list
         }
@@ -88,12 +92,12 @@ def callback_table_put(item):
         except client.exceptions.LimitExceededException as error:
             print('API call limit exceeded!')
             raise
-        except botocore.exceptions.ClientError as error:
-            print(error.response)
-            raise
-        except client.exceptions.ThrottlingException as error:
-            print(error.response)
-            raise
+        # except botocore.exceptions.ClientError as error:
+        #     print(error.response)
+        #     raise
+        # except client.exceptions.ThrottlingException as error:
+        #     print(error.response)
+        #     raise
         # except ThrottlingException:
         #     print("throttling")
         # except ValidationException:
@@ -111,7 +115,11 @@ def listener():
 
 if __name__ == '__main__':
     # initialize 
-    CONST = _Const()
+    access_key = os.getenv('AWS_ACCESS_KEY_ID')
+    secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+    
+    CONST = _Const(access_key = access_key,secret_key = secret_key)
+    print(CONST.AWS_ACCESS_KEY_ID, CONST.AWS_SECRET_ACCESS_KEY)
     count = 0
     total_size = 0
     error_flag = False

@@ -13,6 +13,8 @@ pip install boto3 -t .
 
 3. csi msgs come with 1024 columns
 
+4. DB throughput should be set!
+
 ### data collection script
 
 simpler vers.: 

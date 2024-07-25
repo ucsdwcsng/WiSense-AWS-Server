@@ -4,3 +4,4 @@ data_collection/*
 !_CONST.py
 !collector.py
 !binary_reader.py
+!run_collector.sh
