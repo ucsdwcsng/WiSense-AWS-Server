@@ -4,6 +4,7 @@ from rf_msgs.msg import Wifi
 from std_msgs.msg import String
 from decimal import *
 from _CONST import _Const
+from botocore.config import Config
 
 def mac_to_str(mactup):
    assert len(mactup) == 6, f"Invalid MAC tuple: {mactup}"
@@ -57,7 +58,7 @@ def callback(msg):
     write_file(msg.csi_real, msg.csi_imag)
     
 def write_file(real_list,imag_list):
-    global count, CONST, file_name
+    global count, CONST, file_name, aws_config
     array = real_list + imag_list
 
     # Convert the array to a binary format
@@ -68,14 +69,14 @@ def write_file(real_list,imag_list):
         file.write(binary_data)
 
     if (count % CONST.ROW_PER_FILE == 0):
-        s3 = boto3.client('s3')
+        s3 = boto3.client('s3', config = aws_config)
         s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}')
         file_name = time.time()
     print(f"{count}" , end = " ")
 
 
 def callback_table_put(item):
-    global item_batch, count, CONST, file_name, error_flag
+    global item_batch, count, CONST, file_name, error_flag, aws_config
     # table = dynamodb.Table('DB_test_2')
     # item_batch['RequestItems'][0]['DB_test_2'].append({'PutRequest':item})
     item_batch[f'{CONST.DB_NAME}'].append({'PutRequest':{"Item":item}})
@@ -86,6 +87,7 @@ def callback_table_put(item):
             'dynamodb',
             aws_access_key_id = f"{CONST.AWS_ACCESS_KEY_ID}",
             aws_secret_access_key =  f"{CONST.AWS_SECRET_ACCESS_KEY}",
+            config = aws_config
         )
         try: 
             response = client.batch_write_item(RequestItems = item_batch)
@@ -93,7 +95,7 @@ def callback_table_put(item):
             item_batch[f'{CONST.DB_NAME}'].clear()
             print(response)
         except :
-            print("error detected when collecting data")
+            print("error detected when collecting data, exited in collector.py")
             rospy.signal_shutdown("error detected when collecting data")
             raise
         # except botocore.exceptions.ClientError as error:
@@ -131,6 +133,14 @@ if __name__ == '__main__':
     item_batch = {
         f'{CONST.DB_NAME}': []
     }
+    aws_config = Config(
+        region_name = f'{CONST.SERVER_AREA}',
+        # signature_version = 'v4',
+        # retries = {
+        #     'max_attempts': 10,
+        #     'mode': 'standard'
+        # }
+    )   
     file_name = time.time()
     listener()
 
