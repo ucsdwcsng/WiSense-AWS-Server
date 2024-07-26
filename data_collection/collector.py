@@ -118,7 +118,7 @@ if __name__ == '__main__':
     access_key = os.getenv('AWS_ACCESS_KEY_ID')
     secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     
-    CONST = _Const(access_key = access_key,secret_key = secret_key)
+    CONST = _Const(os)
     print(CONST.AWS_ACCESS_KEY_ID, CONST.AWS_SECRET_ACCESS_KEY)
     count = 0
     total_size = 0
