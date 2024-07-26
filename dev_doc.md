@@ -15,6 +15,7 @@ pip install boto3 -t .
 
 4. DB throughput should be set!
 
+5. link to s3 bucket dev https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html
 ### data collection script
 
 simpler vers.: 

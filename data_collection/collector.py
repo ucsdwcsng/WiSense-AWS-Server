@@ -38,6 +38,7 @@ def callback(msg):
             "rssi":{'N' :str( msg.rssi)},
             "fc": {'N' :str(msg.fc)},
             "seq_num": {'N' :str(msg.seq_num)},
+            "bucket_name": {'S': f"{CONST.BUCKET_NAME}"}
             "file_name": {'S': f"{file_name}"},
             "offset_in_file":{'N': str(count % CONST.ROW_PER_FILE)}
 
@@ -82,7 +83,7 @@ def callback_table_put(item):
         client = boto3.client(
             'dynamodb',
             aws_access_key_id = f"{CONST.AWS_ACCESS_KEY_ID}",
-            aws_secret_access_key =  f"{CONST.AWS_SECRET_ACCESS_KEY}"   
+            aws_secret_access_key =  f"{CONST.AWS_SECRET_ACCESS_KEY}",
         )
         try: 
             response = client.batch_write_item(RequestItems = item_batch)
