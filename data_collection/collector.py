@@ -19,8 +19,8 @@ def callback(msg):
     # imag_list = tuple([Decimal(each) for each in msg.csi_imag])
 
     if error_flag:
-        print("error detected")
-        exit(1) 
+        # rospy.signal_shutdown("error detected when collecting data")
+        pass
 
     single_item = {
             "seq": {'N':str(msg.header.seq)},
@@ -38,7 +38,7 @@ def callback(msg):
             "rssi":{'N' :str( msg.rssi)},
             "fc": {'N' :str(msg.fc)},
             "seq_num": {'N' :str(msg.seq_num)},
-            "bucket_name": {'S': f"{CONST.BUCKET_NAME}"}
+            "bucket_name": {'S': f"{CONST.BUCKET_NAME}"},
             "file_name": {'S': f"{file_name}"},
             "offset_in_file":{'N': str(count % CONST.ROW_PER_FILE)}
 
@@ -68,8 +68,10 @@ def write_file(real_list,imag_list):
         file.write(binary_data)
 
     if (count % CONST.ROW_PER_FILE == 0):
+        s3 = boto3.client('s3')
+        s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}')
         file_name = time.time()
-    print(".",end = " ")
+    print(f"{count}" , end = " ")
 
 
 def callback_table_put(item):
@@ -90,8 +92,9 @@ def callback_table_put(item):
             print("\nrequest batch uploaded")
             item_batch[f'{CONST.DB_NAME}'].clear()
             print(response)
-        except client.exceptions.LimitExceededException as error:
-            print('API call limit exceeded!')
+        except :
+            print("error detected when collecting data")
+            rospy.signal_shutdown("error detected when collecting data")
             raise
         # except botocore.exceptions.ClientError as error:
         #     print(error.response)
@@ -124,6 +127,7 @@ if __name__ == '__main__':
     count = 0
     total_size = 0
     error_flag = False
+    print(CONST.DB_NAME)
     item_batch = {
         f'{CONST.DB_NAME}': []
     }
