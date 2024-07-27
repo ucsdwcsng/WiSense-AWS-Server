@@ -12,7 +12,7 @@ def mac_to_str(mactup):
 
 def callback(msg):
 
-    global count, total_size, error_flag
+    global count, error_flag
     count += 1
 
     # # conver types from float to Decimal
@@ -50,7 +50,6 @@ def callback(msg):
         }
     
     size = sys.getsizeof(msg)
-    total_size += size
 
     # print('count = ' + str(count) +  ' item seq ' + str(msg.seq_num)+ ' inserted to request batch' )
 
@@ -58,7 +57,7 @@ def callback(msg):
     write_file(msg.csi_real, msg.csi_imag)
     
 def write_file(real_list,imag_list):
-    global count, CONST, file_name, aws_config
+    global count, CONST, file_name, aws_config, uploading_file
     array = real_list + imag_list
 
     # Convert the array to a binary format
@@ -70,10 +69,25 @@ def write_file(real_list,imag_list):
 
     if (count % CONST.ROW_PER_FILE == 0):
         s3 = boto3.client('s3', config = aws_config)
-        s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}')
+        print(f'uploading binary file {file_name}')
+        s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}', Callback= deleter_on_callback)
+        uploading_file = f'binary_data/{file_name}'
         file_name = time.time()
-    print(f"{count}" , end = " ")
+    # print(f"{count}" , end = " ")
+    print(f"." , end = "")
 
+def deleter_on_callback(uploaded_bytes):
+    global upload_size, uploading_file
+    file_size = os.path.getsize(f'binary_data/{file_name}')
+
+    upload_size += uploaded_bytes
+    if (upload_size == file_size):
+        upload_size = 0
+        if (CONST.LOCAL_COPY):
+            print(f'binary file {file_name} uploaded and kept')
+        else:
+            os.remove(f'binary_data/{file_name}')
+            print(f'binary file {file_name} uploaded and removed')
 
 def callback_table_put(item):
     global item_batch, count, CONST, file_name, error_flag, aws_config
@@ -91,9 +105,9 @@ def callback_table_put(item):
         )
         try: 
             response = client.batch_write_item(RequestItems = item_batch)
-            print("\nrequest batch uploaded")
+            print(f"\na new request batch uploaded, total requests: {count}")
             item_batch[f'{CONST.DB_NAME}'].clear()
-            print(response)
+            # print(response)
         except :
             print("error detected when collecting data, exited in collector.py")
             rospy.signal_shutdown("error detected when collecting data")
@@ -121,14 +135,14 @@ def listener():
 
 if __name__ == '__main__':
     # initialize 
-    access_key = os.getenv('AWS_ACCESS_KEY_ID')
-    secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+    # access_key = os.getenv('AWS_ACCESS_KEY_ID')
+    # secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     
     CONST = _Const(os)
     print(CONST.AWS_ACCESS_KEY_ID, CONST.AWS_SECRET_ACCESS_KEY)
-    count = 0
-    total_size = 0
+    file_size, upload_size, count = 0, 0 ,0
     error_flag = False
+    uploading_file = None
     print(CONST.DB_NAME)
     item_batch = {
         f'{CONST.DB_NAME}': []

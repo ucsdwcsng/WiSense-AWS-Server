@@ -7,6 +7,7 @@ class _Const:
         self.BUCKET_NAME = f"{os.getenv('BUCKET_NAME')}"
         self.SERVER_AREA = f"{os.getenv('SERVER_AREA')}"
         self.ROW_PER_FILE = int(f"{os.getenv('ROW_PER_FILE')}")
+        self.LOCAL_COPY = bool(int(f"{os.getenv('LOCAL_COPY')}"))
 
     MAX_BATCH_ELEMENT_COUNT = 25
     COL_PER_ROW = 2048
@@ -16,4 +17,5 @@ class _Const:
     AWS_SECRET_ACCESS_KEY = None
     BUCKET_NAME = None
     SERVER_AREA = None
+    LOCAL_COPY = False
     # MAX_THROTTLING_ERROR_TOLERANCE = 10

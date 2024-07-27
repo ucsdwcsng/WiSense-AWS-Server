@@ -15,5 +15,10 @@ export DB_NAME="you_dynamoDB_name"
 export BUCKET_NAME="your_bucket_name"
 export SERVER_AREA="us-west-1"
 export ROW_PER_FILE=10000
+export LOCAL_COPY=1 #0 if not needed >=1 if needed
+
 # Run the Python script
+
+mkdir -p binary_data
+
 python3 collector.py
