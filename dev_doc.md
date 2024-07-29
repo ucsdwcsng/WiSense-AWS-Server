@@ -16,9 +16,20 @@ pip install boto3 -t .
 4. DB throughput should be set!
 
 5. link to s3 bucket dev https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html
-### data collection script
 
-simpler vers.: 
-    RPi will put packet info on dynamoDB, and put csi in CSV. In the entry from dynamoDB, there will be pointer to the CSV file uploaded to the s3bucket, with row number. 
-    so data will be at 2*count + 1 and 2*count + 2
-ultimate vers.: from DB there's hyperlink pointer to the corresponding s3 buckets. In DB there's basic info for packets, except csi.
+
+### data collector script
+
+ - In DB there's basic info for packets, except csi.
+
+ - RPi will put packet info on dynamoDB, and put csi in a binary file. In the entry from dynamoDB, there will be file_name to the bynary file uploaded to the s3bucket, with row number. So real arrays will be at `2*row* colPerRow` and imag arrays wil be at `2*row*colPerRow + 1`
+
+
+ ### data reader script
+ - query data from dynamoDB by taking inputs of a start time and an end time. Returns a CSV file of those data and a txt file with all required binary files with `file_name` and `bucket_name`. 
+
+ - Has an option to download needed binary files automatically 
+
+ ### binary reader script 
+ - takes a csv file, find csi from `/binary_data`, and insert real and imag csi to the csv file. 
+
