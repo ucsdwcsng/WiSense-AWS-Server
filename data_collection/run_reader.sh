@@ -8,8 +8,9 @@ else
     echo "boto3 is working"
 fi
 
-# Run the Python script
+
 
 mkdir -p binary_data
 
-python3 collector.py
+# Run the Python script
+python3 data_reader.py

@@ -1,8 +1,7 @@
 import boto3 
 import sys, rospy, time, struct, csv, botocore, os
 from rf_msgs.msg import Wifi
-from std_msgs.msg import String
-from decimal import *
+# from std_msgs.msg import String
 from _CONST import _Const
 from botocore.config import Config
 
@@ -73,7 +72,6 @@ def write_file(real_list,imag_list):
         s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}', Callback= deleter_on_callback)
         uploading_file = f'binary_data/{file_name}'
         file_name = time.time()
-    # print(f"{count}" , end = " ")
     print(f"." , end = "")
 
 def deleter_on_callback(uploaded_bytes):
@@ -124,8 +122,6 @@ def callback_table_put(item):
         #     print("validation")
 
 def listener():
-
-
     rospy.init_node('test_listener', anonymous=True)
 
     json_obj=rospy.Subscriber("/csi", Wifi, callback)
@@ -135,8 +131,6 @@ def listener():
 
 if __name__ == '__main__':
     # initialize 
-    # access_key = os.getenv('AWS_ACCESS_KEY_ID')
-    # secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     
     CONST = _Const(os)
     print(CONST.AWS_ACCESS_KEY_ID, CONST.AWS_SECRET_ACCESS_KEY)
