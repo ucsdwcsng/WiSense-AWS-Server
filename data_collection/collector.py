@@ -9,6 +9,13 @@ def mac_to_str(mactup):
    assert len(mactup) == 6, f"Invalid MAC tuple: {mactup}"
    return "{:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(mactup[0], mactup[1], mactup[2], mactup[3], mactup[4], mactup[5])
 
+def convert_to_decimal(x):
+    # Count the number of digits in the number
+    num_digits = len(str(x))
+    # Divide the number by 10 raised to the power of the number of digits
+    result = x / (10 ** num_digits)
+    return result
+
 def callback(msg):
 
     global count, error_flag
@@ -23,12 +30,13 @@ def callback(msg):
         pass
 
     single_item = {
-            "seq": {'N':str(msg.header.seq)},
-            "time_stamp":{'N':str(msg.header.stamp.secs) + str(msg.header.stamp.nsecs)},
+            # "seq": {'N':str(msg.header.seq)},
+            "txmac": {'S' :mac_to_str(msg.txmac)},
+            # "time_stamp":{'N':str(msg.header.stamp.secs) + str(msg.header.stamp.nsecs)},
+            "time_stamp": {'N':str(msg.header.stamp.secs + msg.header.stamp.nsecs/10**9)},
             "msg_id": {'N' :str(msg.msg_id)}, 
             "rx_id": {'S' :msg.rx_id},  
             "ap_id": {'N': str(msg.ap_id)},
-            "txmac": {'S' :mac_to_str(msg.txmac)},
             "chan": {'N' :str(msg.chan)},
             "n_sub": {'N' :str(msg.n_sub)},
             "n_rows": {'N' :str(msg.n_rows)},
@@ -47,11 +55,7 @@ def callback(msg):
             # "csi_real": real_list,
             # "csi_imag": imag_list
         }
-    
     size = sys.getsizeof(msg)
-
-    # print('count = ' + str(count) +  ' item seq ' + str(msg.seq_num)+ ' inserted to request batch' )
-
     callback_table_put(single_item)
     write_file(msg.csi_real, msg.csi_imag)
     
@@ -72,7 +76,7 @@ def write_file(real_list,imag_list):
         s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}', Callback= deleter_on_callback)
         uploading_file = f'binary_data/{file_name}'
         file_name = time.time()
-    print(f"." , end = "")
+    # print(f"." , end = "")
 
 def deleter_on_callback(uploaded_bytes):
     global upload_size, uploading_file
@@ -101,25 +105,18 @@ def callback_table_put(item):
             aws_secret_access_key =  f"{CONST.AWS_SECRET_ACCESS_KEY}",
             config = aws_config
         )
+        # response = client.batch_write_item(RequestItems = item_batch)
+        # item_batch[f'{CONST.DB_NAME}'].clear()
         try: 
             response = client.batch_write_item(RequestItems = item_batch)
-            print(f"\na new request batch uploaded, total requests: {count}")
             item_batch[f'{CONST.DB_NAME}'].clear()
+            print(f"\na new request batch uploaded, total requests: {count}")
             # print(response)
         except :
             print("error detected when collecting data, exited in collector.py")
             rospy.signal_shutdown("error detected when collecting data")
             raise
-        # except botocore.exceptions.ClientError as error:
-        #     print(error.response)
-        #     raise
-        # except client.exceptions.ThrottlingException as error:
-        #     print(error.response)
-        #     raise
-        # except ThrottlingException:
-        #     print("throttling")
-        # except ValidationException:
-        #     print("validation")
+
 
 def listener():
     rospy.init_node('test_listener', anonymous=True)
@@ -133,11 +130,12 @@ if __name__ == '__main__':
     # initialize 
     
     CONST = _Const(os)
-    print(CONST.AWS_ACCESS_KEY_ID, CONST.AWS_SECRET_ACCESS_KEY)
+    print("AWS_ACCESS_KEY_ID: " + CONST.AWS_ACCESS_KEY_ID)
+    print("AWS_SECRET_ACCESS_KEY: " + CONST.AWS_SECRET_ACCESS_KEY)
     file_size, upload_size, count = 0, 0 ,0
     error_flag = False
     uploading_file = None
-    print(CONST.DB_NAME)
+    print("DB: " + CONST.DB_NAME)
     item_batch = {
         f'{CONST.DB_NAME}': []
     }
