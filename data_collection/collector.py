@@ -71,11 +71,15 @@ def write_file(real_list,imag_list):
         file.write(binary_data)
 
     if (count % CONST.ROW_PER_FILE == 0):
-        s3 = boto3.client('s3', config = aws_config)
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id = f"{CONST.AWS_ACCESS_KEY_ID}",
+            aws_secret_access_key =  f"{CONST.AWS_SECRET_ACCESS_KEY}",
+            config = aws_config)
         print(f'uploading binary file {file_name}')
         s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}', Callback= deleter_on_callback)
         uploading_file = f'binary_data/{file_name}'
-        file_name = time.time()
+        file_name = str(time.time()) + CONST.DEVICE_NAME
     # print(f"." , end = "")
 
 def deleter_on_callback(uploaded_bytes):
@@ -141,13 +145,14 @@ if __name__ == '__main__':
     }
     aws_config = Config(
         region_name = f'{CONST.SERVER_AREA}',
+
         # signature_version = 'v4',
         # retries = {
         #     'max_attempts': 10,
         #     'mode': 'standard'
         # }
     )   
-    file_name = time.time()
+    file_name = str(time.time()) + CONST.DEVICE_NAME
     listener()
 
 

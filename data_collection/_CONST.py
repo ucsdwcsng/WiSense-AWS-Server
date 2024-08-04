@@ -1,6 +1,7 @@
 
 class _Const:
-    # def __init__(self,os):
+    def __init__(self,os):
+        pass
     #     self.AWS_ACCESS_KEY_ID = f"{os.getenv('AWS_ACCESS_KEY_ID')}"
     #     self.AWS_SECRET_ACCESS_KEY = f"{os.getenv('AWS_SECRET_ACCESS_KEY')}"
     #     self.DB_NAME = f"{os.getenv('DB_NAME')}"
@@ -18,3 +19,11 @@ class _Const:
     BUCKET_NAME = "your bucket name"
     SERVER_AREA = "your server area"
     LOCAL_COPY = True
+    START_TIME_FRAME = 10000
+    END_TIME_FRAME = 10000
+    PARTITION_KEY = "txmac" 
+    PARTITION_KEY_VALUE = "ac:37:43:de:62:e7"
+    SORT_KEY = "time_stamp"
+    SOR_KEY_LOWER_BOUND = 1722690344
+    SOR_KEY_UPPER_BOUND = 1722727344
+    DEVICE_NAME = "you_device_name(will be used for bucket)"

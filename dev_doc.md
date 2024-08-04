@@ -27,27 +27,6 @@ pip install boto3 -t .
  - RPi will put packet info on dynamoDB, and put csi in a binary file. In the entry from dynamoDB, there will be file_name to the bynary file uploaded to the s3bucket, with row number. So real arrays will be at `2*row* colPerRow` and imag arrays wil be at `2*row*colPerRow + 1`
 
 info to upload
- ```
-            "seq": {'N':str(msg.header.seq)},
-            "time_stamp":{'N':str(msg.header.stamp.secs) + str(msg.header.stamp.nsecs)},
-            "msg_id": {'N' :str(msg.msg_id)}, 
-            "rx_id": {'S' :msg.rx_id},  
-            "ap_id": {'N': str(msg.ap_id)},
-            "txmac": {'S' :mac_to_str(msg.txmac)},
-            "chan": {'N' :str(msg.chan)},
-            "n_sub": {'N' :str(msg.n_sub)},
-            "n_rows": {'N' :str(msg.n_rows)},
-            "n_cols": {'N' :str(msg.n_cols)},
-            "bw": {'N' :str(msg.bw)},
-            "mcs": {'N' :str(msg.mcs)},
-            "rssi":{'N' :str( msg.rssi)},
-            "fc": {'N' :str(msg.fc)},
-            "seq_num": {'N' :str(msg.seq_num)},
-            "bucket_name": {'S': f"{CONST.BUCKET_NAME}"},
-            "file_name": {'S': f"{file_name}"},
-            "offset_in_file":{'N': str(count % CONST.ROW_PER_FILE)}
-
- ```
 
 
  ### data reader script
