@@ -26,11 +26,11 @@ pip install boto3 -t .
 
  - RPi will put packet info on dynamoDB, and put csi in a binary file. In the entry from dynamoDB, there will be file_name to the bynary file uploaded to the s3bucket, with row number. So real arrays will be at `2*row* colPerRow` and imag arrays wil be at `2*row*colPerRow + 1`
 
-info to upload
+<!-- info to upload -->
 
 
  ### data reader script
- - query data from dynamoDB by taking inputs of a start time and an end time. Returns a CSV file of those data and a txt file with all required binary files with `file_name` and `bucket_name`. If not found will left blank
+ - query data from dynamoDB by taking inputs of a start time and an end time. Returns a CSV file of those entires and a CSV file with all required binary files with `file_name` and `bucket_name`. If not found will left blank
 
  - Has an option to download needed binary files automatically 
 

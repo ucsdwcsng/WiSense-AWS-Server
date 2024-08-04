@@ -136,10 +136,10 @@ if __name__ == '__main__':
     CONST = _Const(os)
     print("AWS_ACCESS_KEY_ID: " + CONST.AWS_ACCESS_KEY_ID)
     print("AWS_SECRET_ACCESS_KEY: " + CONST.AWS_SECRET_ACCESS_KEY)
+    print("DB: " + CONST.DB_NAME)
     file_size, upload_size, count = 0, 0 ,0
     error_flag = False
     uploading_file = None
-    print("DB: " + CONST.DB_NAME)
     item_batch = {
         f'{CONST.DB_NAME}': []
     }
