@@ -1,5 +1,5 @@
 from boto3.dynamodb.conditions import Key, Attr
-import boto3, os, csv, botocore, sys
+import boto3, os, csv, botocore, sys, struct
 # import rospy, time, struct, 
 from rf_msgs.msg import Wifi
 # from std_msgs.msg import String
@@ -55,6 +55,7 @@ def create_file_list(items):
 
     return binary_files_dict
 
+# download to target folder and return a list of DNE files
 def download_needed_files(binary_files_dict):
     # configure AWS s3
     aws_config = Config(
@@ -68,7 +69,7 @@ def download_needed_files(binary_files_dict):
     )
 
     # Get a list of all entries in the binary_data
-    directory_path = 'binary_data'
+    directory_path = CONST.BINARY_FILES_FOLDER
     entries = os.listdir(directory_path)
     file_names = [entry for entry in entries if os.path.isfile(os.path.join(directory_path, entry))]
     DNE_files = []
@@ -92,7 +93,33 @@ def download_needed_files(binary_files_dict):
                     print(f"An error occurred: {e}")
                     raise
     print(f"\ndownloading complete.\nfiles not found:\n {str(DNE_files)}")
+    return DNE_files
 
+# takes a binary file and return a float array
+def read_floats_from_file(filename):
+    floats = []
+    with open(str(f'{CONST.BINARY_FILES_FOLDER}/{filename}'), 'rb') as file:
+        binary_data = file.read()
+        num_floats = len(binary_data) // struct.calcsize('d')
+        array = list(struct.unpack('d' * num_floats, binary_data))
+    return array
+
+# if required binary file is not downloaded, csi in entries will be None
+def add_csi_to_entries(entries_list):
+    for entry in entries_list:
+        file_name = entry['file_name']
+        offset = int(entry['offset_in_file'])
+        # ignore if no such a binary file
+        dirs = os.listdir(CONST.BINARY_FILES_FOLDER)
+        existed_files = [entry for entry in dirs if os.path.isfile(os.path.join(CONST.BINARY_FILES_FOLDER, entry))]
+        if file_name in existed_files:
+            csi_real_imag = read_floats_from_file(file_name)[offset* CONST.COL_PER_ROW:(offset+1)* CONST.COL_PER_ROW]
+            entry['csi_real'] = csi_real_imag[0:int(CONST.COL_PER_ROW/2)]
+            entry['csi_imag'] = csi_real_imag[int(CONST.COL_PER_ROW/2) :-1]
+            print(f"inserted to entry: {entry[CONST.PARTITION_KEY]}, {entry[CONST.SORT_KEY]}")
+        else:
+            entry['csi_imag'],entry['csi_real'] = None, None
+    return entries_list 
 
 if __name__ == '__main__':
     # initialize 
@@ -103,6 +130,7 @@ if __name__ == '__main__':
     print("DB: " + CONST.DB_NAME +f'\n')
 
     response = get_DB_items()
+    # items are a list of queried entires from DB, where entires are dicts
     items = response['Items']
     if (len(items) <= 0):
         print("no items found")
@@ -111,5 +139,12 @@ if __name__ == '__main__':
     binary_files_dict = create_file_list(items)
     if (CONST.DOWNLOAD_NEEDED_FILES):
         download_needed_files(binary_files_dict)
+    items = add_csi_to_entries(items)
+    for each in items:
+
+        print(each, end=f'\n\n\n\n')
+
+
+    
     # response.pop('Items')
     # print(response)

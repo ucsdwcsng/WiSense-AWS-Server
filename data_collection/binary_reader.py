@@ -1,24 +1,9 @@
-import struct
+import struct, os
 from _CONST import _Const
 
 
 def read_floats_from_file_with_metadata(filename):
     floats = []
-    
-    # # Open the file in read-binary mode
-    # with open(f'binary_data/1721434991.2359798', 'rb') as binary_data:
-    #         # # Read the metadata (length of the next array)
-    #         # metadata = file.read(struct.calcsize('I'))
-    #         # if not metadata:
-    #         #     break
-    #         # (length,) = struct.unpack('I', metadata)
-
-    #         # Read the binary data for the array
-
-    #         # binary_data = file.read(length * struct.calcsize('f'))
-    #     array = struct.unpack('f', binary_data)
-    
-    # return array
 
     # Open the file in read-binary mode
     with open(filename, 'rb') as file:
@@ -34,14 +19,20 @@ def read_floats_from_file_with_metadata(filename):
 
 
 if __name__ == '__main__':
-    CONST = _Const()
+    CONST = _Const(os)
 
     # Example usage
-    all_floats_list = list(read_floats_from_file_with_metadata(f'binary_data/1721439530.3639653'))
+    directory_path = CONST.BINARY_FILES_FOLDER
+    entries = os.listdir(directory_path)
+    file_names_list = [entry for entry in entries if os.path.isfile(os.path.join(directory_path, entry))]
+    print(file_names_list)
+
+    
+    all_floats_list = list(read_floats_from_file_with_metadata(f'binary_data/1722577142.1067612'))
     parsed_list = []
     for i in range(CONST.ROW_PER_FILE):
         offset = i*CONST.COL_PER_ROW
         parsed_list.append(all_floats_list[offset :offset + CONST.COL_PER_ROW])
 
-    print(parsed_list)
-    print(len(parsed_list))
+    # print(parsed_list)
+    print(len(parsed_list[0]))

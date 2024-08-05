@@ -12,13 +12,13 @@ class _Const:
 
     MAX_BATCH_ELEMENT_COUNT = 25
     COL_PER_ROW = 2048
-    ROW_PER_FILE = 1000
+    ROW_PER_FILE = 100
     DB_NAME = "your db name"
     AWS_ACCESS_KEY_ID = "your access key"
     AWS_SECRET_ACCESS_KEY = "your secret key"
     BUCKET_NAME = "your bucket name"
     SERVER_AREA = "your server area"
-    LOCAL_COPY = True
+    LOCAL_COPY = False
     PARTITION_KEY = "txmac" 
     PARTITION_KEY_VALUE = "ac:37:43:de:62:e7"
     SORT_KEY = "time_stamp"
@@ -27,4 +27,4 @@ class _Const:
     DEVICE_NAME = "you_device_name(to avoid naming conflict)"
     CSV_FOR_NEEDED_FILES = True
     DOWNLOAD_NEEDED_FILES = True
-
+    BINARY_FILES_FOLDER = "binary_data"

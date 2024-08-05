@@ -36,7 +36,7 @@ pip install boto3 -t .
 
  ### binary reader script 
  - takes a csv file, find csi from `/binary_data`, and insert real and imag csi to the csv file. 
+ - 
 
-
- ` </launch-prefix something="valgrind -v --track-origins=yes --leak-check=full --show-leak-kinds=all" />`
+ <!-- ` </launch-prefix something="valgrind -v --track-origins=yes --leak-check=full --show-leak-kinds=all" />` -->
 
