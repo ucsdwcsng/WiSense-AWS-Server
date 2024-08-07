@@ -21,10 +21,6 @@ def callback(msg):
     global count, error_flag
     count += 1
 
-    # # conver types from float to Decimal
-    # real_list = tuple([Decimal(each) for each in msg.csi_real])
-    # imag_list = tuple([Decimal(each) for each in msg.csi_imag])
-
     if error_flag:
         # rospy.signal_shutdown("error detected when collecting data")
         pass

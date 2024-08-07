@@ -141,9 +141,8 @@ if __name__ == '__main__':
         download_needed_files(binary_files_dict)
     items = add_csi_to_entries(items)
     for each in items:
-
         print(each, end=f'\n\n\n\n')
-
+    print(f'{len(items)} items found, ')
 
     
     # response.pop('Items')
