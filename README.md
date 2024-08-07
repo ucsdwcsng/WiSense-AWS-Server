@@ -1,12 +1,18 @@
 # Data Collecting and Processing Support for WiROS
 
 This repo contains scripts for collecting data from [WiROS](https://github.com/ucsdwcsng/WiROS) using AWS Services by BOTO3 Software Development Kit
-[TODO: insert pipeline]
+![TODO: insert pipeline](/media/data_pipeline.png)
 
 ## Table of Contents
 
 - [Imporatant Files](#important-files)
 - [Configurations and Setup](#configurations-and-setup)
+    - [AWS Account](#step-2-configure-aws)
+    - [AWS DynamoDB](#step-3-configure-aws-dynamodb)
+    - [AWS S3](#step-4-configure-aws-s3)
+    - [AWS Users](#step-5-configure-aws-users)
+    - [Data Collector and Processor Setup](#step-6-setup-and-configure-data-collector)
+- [Usage Examples](#usage-examples)
 
 ## Important Files:
 1. [**`data_collection/_CONST.py`**](/data_collection/_CONST.py) - Configuration file to setup all parameters, including AWS credentials, DB names, data collector and reader configs, and etc. 
@@ -104,7 +110,7 @@ BUCKET_NAME = "your bucket name"
 SERVER_AREA = "your server area"
 ```
 
-## Usage examples
+## Usage Examples
 
 ### Collecting CSI and upload to the cloud
 
