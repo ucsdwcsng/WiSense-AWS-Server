@@ -11,6 +11,7 @@ class _Const:
     #     self.LOCAL_COPY = bool(int(f"{os.getenv('LOCAL_COPY')}"))
 
     MAX_BATCH_ELEMENT_COUNT = 25
+    ROS_TOPIC = "csi_server/csi"
     COL_PER_ROW = 2048
     ROW_PER_FILE = 100
     DB_NAME = "your db name"
@@ -28,3 +29,5 @@ class _Const:
     CSV_FOR_NEEDED_FILES = True
     DOWNLOAD_NEEDED_FILES = True
     BINARY_FILES_FOLDER = "binary_data"
+
+  

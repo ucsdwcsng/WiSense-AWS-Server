@@ -121,7 +121,7 @@ def callback_table_put(item):
 def listener():
     rospy.init_node('test_listener', anonymous=True)
 
-    json_obj=rospy.Subscriber("/csi", Wifi, callback)
+    json_obj=rospy.Subscriber(CONST.ROS_TOPIC, Wifi, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
