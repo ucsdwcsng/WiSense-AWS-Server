@@ -2,7 +2,8 @@
 data_collection/*
 MQTT_connection/*
 !/data_collection/binary_data
-!/MQTT_connection/console_rx.py
+!console_rx.py
+!wiros_subprocess.py
 !_CONST.py
 !collector.py
 !binary_reader.py
