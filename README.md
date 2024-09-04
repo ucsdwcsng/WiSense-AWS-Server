@@ -163,3 +163,9 @@ SERVER_AREA = "your server area"
     chmod +x ./run_reader.sh
     ./run_reader.sh
     ```
+
+
+# TODO: MQTT console
+
+1. get a user with `AWSIoTConfigAccess` permission
+2. run the env set secrete access and access

@@ -74,6 +74,8 @@ def write_file(real_list,imag_list):
             config = aws_config)
         print(f'uploading binary file {file_name}')
         s3.upload_file(f'binary_data/{file_name}', f'{CONST.BUCKET_NAME}', f'{file_name}', Callback= deleter_on_callback)
+        with open("/home/wcsng/s3_upload_log.txt", "a") as f:
+            f.write(f"Uploaded 100 packets at {time.time()}\n")
         uploading_file = f'binary_data/{file_name}'
         file_name = str(time.time()) + CONST.DEVICE_NAME
     # print(f"." , end = "")

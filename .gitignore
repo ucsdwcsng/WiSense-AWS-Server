@@ -1,9 +1,12 @@
 /data_collection/binary_data/*
 data_collection/*
+MQTT_connection/*
 !/data_collection/binary_data
+!/MQTT_connection/console_rx.py
 !_CONST.py
 !collector.py
 !binary_reader.py
 !data_reader.py
 !run_collector.sh
 !run_reader.sh
+!MQTT_setup.sh
