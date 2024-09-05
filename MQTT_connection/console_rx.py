@@ -36,14 +36,16 @@ class Processes():
     def start_wiros(self):
         launch_file = "/home/wcsng/van_wiros/src/wiros_csi_node/launch/basic.launch"    # Replace with your launch file name
         self.roscore_process = wiros_subprocess.start_roscore()
+        # self.roscore_process.wait()
         self.wiros_process = wiros_subprocess.run_ros_launch(launch_file)
         self.status_map['wiros'] = 1
+        print(f'Successfully started')
+
 
     def stop_wiros(self):
         # Retrieve the PID of the terminal and terminate
         pgid = os.getpgid(self.wiros_process.pid)
         os.killpg(pgid, signal.SIGTERM)
-        print(f'roscore process PID = {self.roscore_process.pid}, os PID = {pgid}')
         pgid = os.getpgid(self.roscore_process.pid)
         os.killpg(pgid, signal.SIGTERM)
         # self.roscore_process.terminate()  # Terminate the roscore process
@@ -90,14 +92,14 @@ def on_message_received(topic, payload, dup, qos, retain, **kwargs):
     new_cmd = True
 
 def cmd_parser(json_cmd):
-    if json_cmd["start_wiros"] == 1:
+    if "start_wiros" in json_cmd and json_cmd["start_wiros"] == 1:
         if process_console.status_map["wiros"] == 0:
             print('starting wiros...')
             process_console.start_wiros()
         else:
             print('already started')
     
-    if json_cmd["stop_wiros"] == 1:
+    if "stop_wiros" in json_cmd and json_cmd["stop_wiros"] == 1:
         if process_console.status_map["wiros"] == 1:
             print('stopping wiros...')
             process_console.stop_wiros()
@@ -190,9 +192,14 @@ if __name__ == '__main__':
             else:
                 print("no message yet.")
             
-            time.sleep(1)
+            time.sleep(3)
         except KeyboardInterrupt:
-            exit()
+            mqtt_connection.disconnect()
+            sys.exit()
+        
+        except Exception:
+            mqtt_connection.disconnect()
+            sys.exit()
 
     # subscribe_result = subscribe_future.result()
     # print("Subscribed with {}".format(str(subscribe_result['qos'])))

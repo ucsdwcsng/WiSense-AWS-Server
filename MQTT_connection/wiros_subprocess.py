@@ -1,9 +1,13 @@
 import roslaunch, subprocess
-import rospy, shlex
+import rospy
 
 def start_roscore():
+    command = f'bash -c "source ~/.bashrc && roscore"'
+    
     # Start roscore in a new macOS Terminal window
-    return subprocess.Popen(['gnome-terminal', '--', 'roscore'])
+    # return subprocess.Popen(['gnome-terminal', '--', 'roscore'])
+    process = subprocess.Popen(command, shell=True, text=True, stdout=subprocess.DEVNULL)
+    return process
 
 
 # Function to launch a ROS launch file
@@ -16,13 +20,13 @@ def run_ros_launch( launch_file):
     # roslaunch.configure_logging(uuid)
 
     # Define the command to source the bashrc and run roslaunch
-    command = f"source ~/.bashrc && roslaunch {launch_file}"
+    command = f'bash -c "source ~/.bashrc && roslaunch {launch_file}"'
 
     # Construct the gnome-terminal command to run the command
-    gnome_terminal_command = f'gnome-terminal -- bash -c "{command}"'
+    # gnome_terminal_command = f'gnome-terminal -- bash -c "{command}"'
 
     # Run the command in a subprocess within a new GNOME Terminal
-    process = subprocess.Popen(gnome_terminal_command, shell=True, text=True)
+    process = subprocess.Popen(command, shell=True, text=True, stdout=subprocess.DEVNULL)
 
 
     # # Keep the script alive to maintain the ROS launch process
