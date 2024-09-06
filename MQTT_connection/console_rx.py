@@ -45,15 +45,31 @@ class Processes():
     def stop_wiros(self):
         # Retrieve the PID of the terminal and terminate
         pgid = os.getpgid(self.wiros_process.pid)
-        os.killpg(pgid, signal.SIGTERM)
+        print(f'wiros ospid = {pgid}')
+        print(f'wiros pid = {self.wiros_process.pid}')
+        # wiros_subprocess.stop_roscore()
+        os.killpg(pgid, signal.SIGINT)
+
         pgid = os.getpgid(self.roscore_process.pid)
-        os.killpg(pgid, signal.SIGTERM)
-        # self.roscore_process.terminate()  # Terminate the roscore process
+        print(f'roscore ospid = {pgid}')
+        print(f'roscore pid = {self.roscore_process.pid}')
+        os.killpg(pgid, signal.SIGINT)
+
+        # self.wiros_process.send_signal(signal.SIGINT) 
+        # self.wiros_process.send_signal(signal.SIGINT)
+        self.wiros_process.wait()  
+        print('wiros terminated')
+        # self.roscore_process.send_signal(signal.SIGINT)  # Terminate the roscore process
+        # os.kill(os.getpid(), signal.SIGTERM)
+        # self.roscore_process.send_signal(signal.SIGINT)
+        self.roscore_process.wait()  
+        
         # self.roscore_process.wait()
         print("roscore and wiros has been terminated.")
         self.status_map['wiros'] = 0
 
 
+        # os.killpg(pgid, signal.SIGTERM)
 
 # Callback when connection is accidentally lost.
 def on_connection_interrupted(connection, error, **kwargs):
@@ -92,12 +108,6 @@ def on_message_received(topic, payload, dup, qos, retain, **kwargs):
     new_cmd = True
 
 def cmd_parser(json_cmd):
-    if "start_wiros" in json_cmd and json_cmd["start_wiros"] == 1:
-        if process_console.status_map["wiros"] == 0:
-            print('starting wiros...')
-            process_console.start_wiros()
-        else:
-            print('already started')
     
     if "stop_wiros" in json_cmd and json_cmd["stop_wiros"] == 1:
         if process_console.status_map["wiros"] == 1:
@@ -105,6 +115,13 @@ def cmd_parser(json_cmd):
             process_console.stop_wiros()
         else:
             print('already stopped')
+
+    if "start_wiros" in json_cmd and json_cmd["start_wiros"] == 1:
+        if process_console.status_map["wiros"] == 0:
+            print('starting wiros...')
+            process_console.start_wiros()
+        else:
+            print('already started')
 
 
 
@@ -193,11 +210,13 @@ if __name__ == '__main__':
                 print("no message yet.")
             
             time.sleep(3)
-        except KeyboardInterrupt:
+        except KeyboardInterrupt as e:
+            print(e)
             mqtt_connection.disconnect()
             sys.exit()
         
-        except Exception:
+        except Exception as e:
+            print(e)
             mqtt_connection.disconnect()
             sys.exit()
 
