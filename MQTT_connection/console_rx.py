@@ -6,7 +6,7 @@ from awsiot import mqtt_connection_builder
 import sys, os, json, signal
 import threading
 import time
-from utils.command_line_utils import CommandLineUtils
+# from utils.command_line_utils import CommandLineUtils
 import wiros_subprocess 
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
