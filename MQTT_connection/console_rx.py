@@ -34,7 +34,7 @@ class Processes():
         }
     
     def start_wiros(self):
-        launch_file = "/home/wcsng/van_wiros/src/wiros_csi_node/launch/basic.launch"    # Replace with your launch file name
+        launch_file = os.getenv('launchFilePath')    # Replace with your launch file name
         self.roscore_process = wiros_subprocess.start_roscore()
         # self.roscore_process.wait()
         self.wiros_process = wiros_subprocess.run_ros_launch(launch_file)
@@ -45,31 +45,17 @@ class Processes():
     def stop_wiros(self):
         # Retrieve the PID of the terminal and terminate
         pgid = os.getpgid(self.wiros_process.pid)
-        print(f'wiros ospid = {pgid}')
-        print(f'wiros pid = {self.wiros_process.pid}')
-        # wiros_subprocess.stop_roscore()
         os.killpg(pgid, signal.SIGINT)
 
         pgid = os.getpgid(self.roscore_process.pid)
-        print(f'roscore ospid = {pgid}')
-        print(f'roscore pid = {self.roscore_process.pid}')
         os.killpg(pgid, signal.SIGINT)
 
-        # self.wiros_process.send_signal(signal.SIGINT) 
-        # self.wiros_process.send_signal(signal.SIGINT)
         self.wiros_process.wait()  
-        print('wiros terminated')
-        # self.roscore_process.send_signal(signal.SIGINT)  # Terminate the roscore process
-        # os.kill(os.getpid(), signal.SIGTERM)
-        # self.roscore_process.send_signal(signal.SIGINT)
         self.roscore_process.wait()  
-        
-        # self.roscore_process.wait()
         print("roscore and wiros has been terminated.")
         self.status_map['wiros'] = 0
 
 
-        # os.killpg(pgid, signal.SIGTERM)
 
 # Callback when connection is accidentally lost.
 def on_connection_interrupted(connection, error, **kwargs):
@@ -187,7 +173,7 @@ if __name__ == '__main__':
     # message_string = cmdData.input_message
 
     # message_count = cmdData.input_count
-    message_topic = "sdk/test/js"
+    message_topic = os.getenv('MQTT_topic')
     # message_string = cmdData.input_message
 
     # Subscribe

@@ -11,3 +11,4 @@ MQTT_connection/*
 !run_collector.sh
 !run_reader.sh
 !MQTT_setup.sh
+!MQTT_listener.sh
