@@ -11,7 +11,6 @@ def start_roscore():
 
 def stop_roscore():
     rospy.signal_shutdown('roscore subprocess shutdown')
-    print('lol shut ')
 
 def stop_roslaunch():
     pass

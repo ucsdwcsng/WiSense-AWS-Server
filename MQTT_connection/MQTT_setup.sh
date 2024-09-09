@@ -6,7 +6,7 @@ source ~/.bashrc
 aws configure
 
 # download CA cert
-mkdir ~/certs/pubsub
+mkdir -p ~/certs/pubsub
 curl -o ~/certs/AmazonRootCA1.pem https://www.amazontrust.com/repository/AmazonRootCA1.pem
 chmod 745 ~
 chmod 700 ~/certs
