@@ -147,8 +147,8 @@ if __name__ == '__main__':
         ca_filepath=os.path.expanduser("~/certs/AmazonRootCA1.pem"),
         on_connection_interrupted=on_connection_interrupted,
         on_connection_resumed=on_connection_resumed,
-        # client_id=os.getenv("thingName"),
-        client_id="basicPubSub",
+        client_id=os.getenv("thingName"),
+        # client_id="basicPubSub",
         clean_session=False,
         keep_alive_secs=30,
         http_proxy_options=proxy_options,
@@ -168,10 +168,6 @@ if __name__ == '__main__':
     # Future.result() waits until a result is available
     connect_future.result()
     print("Connected!")
-
-    # message_count = cmdData.input_count
-    # message_topic = cmdData.input_topic
-    # message_string = cmdData.input_message
 
     # message_count = cmdData.input_count
     message_topic = os.getenv('MQTT_topic')
