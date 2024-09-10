@@ -30,7 +30,8 @@ class Processes():
         self.roscore_process = None
         self.wiros_process = None
         self.status_map={
-            'wiros': 0
+            'wiros': 0,
+            
         }
     
     def start_wiros(self):

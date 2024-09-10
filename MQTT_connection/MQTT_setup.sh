@@ -49,7 +49,7 @@ aws iot create-thing --thing-name $thingName
 echo $certificateArn
 echo $thingName
 
-aws iot attach-policy --policy-name mqtt-reciver-Policy  --target $certificateArn
+aws iot attach-policy --policy-name wiros_MQTT_console  --target $certificateArn
 aws iot attach-thing-principal --thing-name $thingName --principal $certificateArn
 export endpointAddress=$endpointAddress
 export thingName=$thingName

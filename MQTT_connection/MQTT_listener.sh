@@ -10,8 +10,8 @@ certificateArn=$(jq -r '.certificateArn' MQTT_param.json)
 export endpointAddress
 export thingName
 export certificateArn
-export MQTT_topic='sdk/test/js'
-export launchFilePath='"/home/wcsng/van_wiros/src/wiros_csi_node/launch/basic.launch"'
+export MQTT_topic='wiros_console'
+export launchFilePath='"/root/wiros/src/wiros_csi_node/launch/basic.launch"'
 # Print the values to verify (optional)
 echo "Endpoint Address: $endpointAddress"
 echo "Thing Name: $thingName"
