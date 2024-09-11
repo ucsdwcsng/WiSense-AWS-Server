@@ -8,6 +8,7 @@ import threading
 import time
 # from utils.command_line_utils import CommandLineUtils
 import wiros_subprocess 
+import xml.etree.ElementTree as ET
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
@@ -29,16 +30,43 @@ class Processes():
     def __init__(self):
         self.roscore_process = None
         self.wiros_process = None
+        self.launch_file = os.getenv('launchFilePath')  
         self.status_map={
+            'deviceId':os.getenv('thingName'),
             'wiros': 0,
-            
+            'count':0
         }
-    
+        tree = ET.parse(self.launch_file)
+        root = tree.getroot()
+        for param in root.findall(".//param"):
+            self.status_map[param.get('name')]=param.get('value')
+
+    # Function to find and modify a param in the launch file
+    def modify_param(self, param_name, new_value):
+        tree = ET.parse(self.launch_file)
+        root = tree.getroot()
+        # Find the param element with the specified name
+        for param in root.findall(".//param"):
+            if param.get('name') == param_name:
+                oldVal = param.get('value')
+                # Modify the attribute
+                param.set('value', str(new_value))
+                tree.write(self.launch_file)
+                self.update_status()
+                return oldVal
+        # if DNE
+        return None
+        
+    def update_status(self):
+        tree = ET.parse(self.launch_file)
+        root = tree.getroot()
+        for param in root.findall(".//param"):
+            self.status_map[param.get('name')]=param.get('value')
+
     def start_wiros(self):
-        launch_file = os.getenv('launchFilePath')    # Replace with your launch file name
         self.roscore_process = wiros_subprocess.start_roscore()
         # self.roscore_process.wait()
-        self.wiros_process = wiros_subprocess.run_ros_launch(launch_file)
+        self.wiros_process = wiros_subprocess.run_ros_launch(self.launch_file)
         self.status_map['wiros'] = 1
         print(f'Successfully started')
 
@@ -55,8 +83,6 @@ class Processes():
         self.roscore_process.wait()  
         print("roscore and wiros has been terminated.")
         self.status_map['wiros'] = 0
-
-
 
 # Callback when connection is accidentally lost.
 def on_connection_interrupted(connection, error, **kwargs):
@@ -110,6 +136,29 @@ def cmd_parser(json_cmd):
         else:
             print('already started')
 
+    if "change_params" in json_cmd:
+        if process_console.status_map['wiros'] == 0:
+            paramsToChange = json_cmd['change_params']
+            for param in paramsToChange.keys():
+                process_console.modify_param(param, paramsToChange[param])
+        else: 
+            message_json = {
+                'deviceId':os.getenv('thingName'),
+                'warning_msg': 'cannot change param while wiros is running'
+            }
+            mqtt_connection.publish(
+            topic=os.getenv('MQTT_topic'),
+            payload=message_json,
+            qos=mqtt.QoS.AT_LEAST_ONCE)
+
+    if "status" in json_cmd and json_cmd["status"] == 1:
+        message_json = json.dumps(process_console.status_map)
+        mqtt_connection.publish(
+            topic=os.getenv('MQTT_topic'),
+            payload=message_json,
+            qos=mqtt.QoS.AT_LEAST_ONCE)
+
+
 
 
 
@@ -131,6 +180,8 @@ def on_connection_closed(connection, callback_data):
 if __name__ == '__main__':
     # Create the proxy options if the data is present in cmdData
     proxy_options = None
+    # Parse the launch file
+
     process_console = Processes()
     # if cmdData.input_proxy_host is not None and cmdData.input_proxy_port != 0:
     #     proxy_options = http.HttpProxyOptions(

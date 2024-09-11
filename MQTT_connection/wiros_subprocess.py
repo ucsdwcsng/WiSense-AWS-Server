@@ -1,4 +1,4 @@
-import roslaunch, rospy, subprocess
+import roslaunch, rospy, subprocess, rosparam
 
 
 def start_roscore():
@@ -15,8 +15,27 @@ def stop_roscore():
 def stop_roslaunch():
     pass
 
+# # return the value of the param, None if DNE
+# def find_param(launch_file, paramId):
+#     try:
+#         paramVal = rosparam.get_param(f'/csi_server/{paramId}')
+#         return paramVal
+#     except KeyError:
+#         print(f"Parameter '/csi_server/{paramId}' does not exist.")
+#         return None
+
+# # set the new value return original value, none if DNE
+# def set_param(launch_file, paramId, val):
+#     try:
+#         paramVal = rosparam.get_param(f'/csi_server/{paramId}')
+#         paramVal = rosparam.get_param(f'/csi_server/{paramId}',val)
+#         return paramVal
+#     except KeyError:
+#         print(f"Parameter '/csi_server/{paramId}' does not exist.")
+#         return None
+
 # Function to launch a ROS launch file
-def run_ros_launch( launch_file):
+def run_ros_launch(launch_file):
     # # Initialize the ROS node 
     rospy.init_node('roslaunch_script', anonymous=True)
 
