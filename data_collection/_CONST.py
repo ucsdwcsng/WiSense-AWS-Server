@@ -14,20 +14,18 @@ class _Const:
     ROS_TOPIC = "csi_server/csi"
     COL_PER_ROW = 2048
     ROW_PER_FILE = 100
-    DB_NAME = "your db name"
-    AWS_ACCESS_KEY_ID = "your access key"
-    AWS_SECRET_ACCESS_KEY = "your secret key"
-    BUCKET_NAME = "your bucket name"
-    SERVER_AREA = "your server area"
-    LOCAL_COPY = False
-    PARTITION_KEY = "txmac" 
-    PARTITION_KEY_VALUE = "ac:37:43:de:62:e7"
+    DB_NAME = "test_demo"
+    # AWS_ACCESS_KEY_ID = ""
+    # AWS_SECRET_ACCESS_KEY = ""
+    BUCKET_NAME = "test0904"
+    SERVER_AREA = "us-west-1"
+    LOCAL_COPY = True
+    PARTITION_KEY = "txmac"
+    PARTITION_KEY_VALUE = "6a:79:7e:67:48:38"
     SORT_KEY = "time_stamp"
-    SORT_KEY_LOWER_BOUND = 1722690344
-    SORT_KEY_UPPER_BOUND = 1722727344
-    DEVICE_NAME = "you_device_name(to avoid naming conflict)"
+    SORT_KEY_LOWER_BOUND = 1725492679
+    SORT_KEY_UPPER_BOUND = 1725492699
+    DEVICE_NAME = "wiros_desktop"
     CSV_FOR_NEEDED_FILES = True
     DOWNLOAD_NEEDED_FILES = True
     BINARY_FILES_FOLDER = "binary_data"
-
-

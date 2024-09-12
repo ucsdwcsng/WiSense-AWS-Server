@@ -111,17 +111,22 @@ export endpointAddress=$endpointAddress
 export thingName=$thingName
 export certificateArn=$certificateArn
 export certificateArn=$topic
-
+AWS_ACCESS_KEY_ID=(aws configure get default.aws_access_key_id)
+AWS_SECRET_ACCESS_KEY=(aws configure get default.aws_secret_access_key)
 # Create the JSON file
 jq -n \
   --arg endpointAddress "$endpointAddress" \
   --arg thingName "$thingName" \
   --arg certificateArn "$certificateArn" \
   --arg topic "$topic" \
+  --arg AWS_ACCESS_KEY_ID "$AWS_ACCESS_KEY_ID" \
+  --arg AWS_SECRET_ACCESS_KEY "$AWS_SECRET_ACCESS_KEY" \
   '{
     endpointAddress: $endpointAddress,
     thingName: $thingName,
     certificateArn: $certificateArn,
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY,
     topic: $topic
   }' > MQTT_param.json
 

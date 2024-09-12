@@ -114,8 +114,8 @@ def callback_table_put(item):
             item_batch[f'{CONST.DB_NAME}'].clear()
             print(f"\na new request batch uploaded, total requests: {count}")
             # print(response)
-        except :
-            print("error detected when collecting data, exited in collector.py")
+        except Exception as e:
+            print(e)
             rospy.signal_shutdown("error detected when collecting data")
             raise
 
