@@ -3,9 +3,6 @@ import roslaunch, rospy, subprocess
 
 def start_roscore():
     command = f'bash -c "source ~/.bashrc && roscore"'
-    
-    # Start roscore in a new macOS Terminal window
-    # return subprocess.Popen(['gnome-terminal', '--', 'roscore'])
     process = subprocess.Popen(command, shell=True, text=True, stdout=subprocess.DEVNULL)
     return process
 
@@ -35,7 +32,17 @@ def run_ros_launch(launch_file):
 
     return process
 
+def start_collector():
+    command = f'bash -c "source ~/.bashrc && cd ~/wiros_data_collection/data_collection && ./run_collector.sh"'
 
+    # Run the command in a subprocess within a new GNOME Terminal
+    process = subprocess.Popen(command, shell=True, text=True, stdout=subprocess.DEVNULL)
+    return process
+
+# def stop_collector():
+#     command = f'bash -c "source ~/.bashrc && roscore"'
+#     process = subprocess.Popen(command, shell=True, text=True, stdout=subprocess.DEVNULL)
+#     return process
         
 if __name__ == "__main__":
     start_roscore()
