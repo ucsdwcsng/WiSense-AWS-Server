@@ -2,8 +2,8 @@
 class _Const:
     def __init__(self,os):
         pass
-    #     self.AWS_ACCESS_KEY_ID = f"{os.getenv('AWS_ACCESS_KEY_ID')}"
-    #     self.AWS_SECRET_ACCESS_KEY = f"{os.getenv('AWS_SECRET_ACCESS_KEY')}"
+        self.AWS_ACCESS_KEY_ID = f"{os.getenv('AWS_ACCESS_KEY_ID')}"
+        self.AWS_SECRET_ACCESS_KEY = f"{os.getenv('AWS_SECRET_ACCESS_KEY')}"
     #     self.DB_NAME = f"{os.getenv('DB_NAME')}"
     #     self.BUCKET_NAME = f"{os.getenv('BUCKET_NAME')}"
     #     self.SERVER_AREA = f"{os.getenv('SERVER_AREA')}"
@@ -30,4 +30,4 @@ class _Const:
     DOWNLOAD_NEEDED_FILES = True
     BINARY_FILES_FOLDER = "binary_data"
 
-  
+
