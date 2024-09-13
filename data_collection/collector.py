@@ -112,7 +112,7 @@ def callback_table_put(item):
         try: 
             response = client.batch_write_item(RequestItems = item_batch)
             item_batch[f'{CONST.DB_NAME}'].clear()
-            print(f"\na new request batch uploaded, total requests: {count}")
+            # print(f"\na new request batch uploaded, total requests: {count}")
             # print(response)
         except Exception as e:
             print(e)

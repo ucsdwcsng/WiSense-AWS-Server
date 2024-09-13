@@ -36,8 +36,8 @@ def start_collector():
     command = f'bash -c "source ~/.bashrc && cd ~/wiros_data_collection/data_collection && ./run_collector.sh"'
 
     # Run the command in a subprocess within a new GNOME Terminal
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.DEVNULL, preexec_fn=subprocess.os.setpgrp)
-    # process = subprocess.Popen(command, shell=True, preexec_fn=subprocess.os.setpgrp)
+    # process = subprocess.Popen(command, shell=True, stdout=subprocess.DEVNULL, preexec_fn=subprocess.os.setpgrp)
+    process = subprocess.Popen(command, shell=True, preexec_fn=subprocess.os.setpgrp)
     return process
 
 # def stop_collector():
