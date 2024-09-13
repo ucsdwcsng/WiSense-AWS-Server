@@ -25,5 +25,7 @@ echo "Thing Name and clientID: $thingName"
 echo "Certificate ARN: $certificateArn"
 echo "Topic: $topic"
 
+# make sure roscore is running in the background
+screen -dmS roscore_session roscore
 # Run listening program
 python3 console_rx.py

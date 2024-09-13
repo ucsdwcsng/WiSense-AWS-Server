@@ -36,9 +36,9 @@ class Processes():
             'wiros': 0,
             'count':0
         }
+        self.deviceId = os.getenv('thingName')
         tree = ET.parse(self.launch_file)
         root = tree.getroot()
-        self.roscore_process = wiros_subprocess.start_roscore()
 
         for param in root.findall(".//param"):
             self.status_map[param.get('name')]=param.get('value')
@@ -66,8 +66,6 @@ class Processes():
             self.status_map[param.get('name')]=param.get('value')
 
     def start_wiros(self):
-        # self.roscore_process = wiros_subprocess.start_roscore()
-        # self.roscore_process.wait()
         self.wiros_process = wiros_subprocess.run_ros_launch(self.launch_file)
         self.status_map['wiros'] = 1
         print(f'Successfully started')
@@ -78,9 +76,7 @@ class Processes():
         pgid = os.getpgid(self.wiros_process.pid)
         os.killpg(pgid, signal.SIGINT)
 
-
         self.wiros_process.wait()  
-        # self.roscore_process.wait()  
         print("roscore and wiros has been terminated.")
         self.status_map['wiros'] = 0
 
@@ -120,8 +116,52 @@ def on_message_received(topic, payload, dup, qos, retain, **kwargs):
     received_count += 1
     new_cmd = True
 
+def publish_warning(msg):
+    msgWithId = {
+        'deviceId':os.getenv('thingName'),
+        'warning_msg': msg
+    }
+    message_json = json.dumps(msgWithId)
+    mqtt_connection.publish(
+    topic=os.getenv('MQTT_topic'),
+    payload=message_json,
+    qos=mqtt.QoS.AT_LEAST_ONCE)
+    print(f'warning msg published: {msg}')
+
+def publish_status():
+    message_json = json.dumps(process_console.status_map)
+    mqtt_connection.publish(
+        topic=os.getenv('MQTT_topic'),
+        payload=message_json,
+        qos=mqtt.QoS.AT_LEAST_ONCE)
+
 def cmd_parser(json_cmd):
-    
+
+    if 'from_console' not in json_cmd or json_cmd["from_console"] != 1:
+        return
+
+    if "show_all_devices" in json_cmd and json_cmd["show_all_devices"] == 1:
+        publish_status()
+
+    if 'targets' in json_cmd:
+        # skip if current device is not the cmd target
+        if process_console.deviceId not in json_cmd['targets']:
+            print('not me')
+            return 
+    else:
+        publish_warning("No targets specified!")
+        return 
+
+    if "change_params" in json_cmd:
+        if process_console.status_map['wiros'] == 0:
+            print("wiros is not running")
+            paramsToChange = json_cmd['change_params']
+            for param in paramsToChange.keys():
+                process_console.modify_param(param, paramsToChange[param])
+        else: 
+            warning_msg= 'cannot change param while wiros is running'
+            publish_warning(warning_msg)
+
     if "stop_wiros" in json_cmd and json_cmd["stop_wiros"] == 1:
         if process_console.status_map["wiros"] == 1:
             print('stopping wiros...')
@@ -136,20 +176,20 @@ def cmd_parser(json_cmd):
         else:
             print('already started')
 
-    if "change_params" in json_cmd:
-        if process_console.status_map['wiros'] == 0:
-            paramsToChange = json_cmd['change_params']
-            for param in paramsToChange.keys():
-                process_console.modify_param(param, paramsToChange[param])
-        else: 
-            message_json = {
-                'deviceId':os.getenv('thingName'),
-                'warning_msg': 'cannot change param while wiros is running'
-            }
-            mqtt_connection.publish(
-            topic=os.getenv('MQTT_topic'),
-            payload=message_json,
-            qos=mqtt.QoS.AT_LEAST_ONCE)
+    # if "change_params" in json_cmd:
+    #     if process_console.status_map['wiros'] == 0:
+    #         paramsToChange = json_cmd['change_params']
+    #         for param in paramsToChange.keys():
+    #             process_console.modify_param(param, paramsToChange[param])
+    #     else: 
+    #         message_json = {
+    #             'deviceId':os.getenv('thingName'),
+    #             'warning_msg': 'cannot change param while wiros is running'
+    #         }
+    #         mqtt_connection.publish(
+    #         topic=os.getenv('MQTT_topic'),
+    #         payload=message_json,
+    #         qos=mqtt.QoS.AT_LEAST_ONCE)
 
     if "status" in json_cmd and json_cmd["status"] == 1:
         message_json = json.dumps(process_console.status_map)
@@ -246,11 +286,13 @@ if __name__ == '__main__':
             time.sleep(3)
         except KeyboardInterrupt as e:
             print(e)
+            # process_console.roscore_process.send_signal(signal.SIGINT)
             mqtt_connection.disconnect()
             sys.exit()
         
         except Exception as e:
             print(e)
+            process_console.roscore_process.send_signal(signal.SIGINT)
             mqtt_connection.disconnect()
             sys.exit()
 
