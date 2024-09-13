@@ -16,8 +16,8 @@ export certificateArn
 export MQTT_topic=$topic
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
-export launchFilePath='/home/wcsng/van_wiros/src/wiros_csi_node/launch/basic.launch'
-# export launchFilePath='root/wiros/src/wiros_csi_node/launch/basic.launch'
+# export launchFilePath='/home/wcsng/van_wiros/src/wiros_csi_node/launch/basic.launch'
+export launchFilePath='root/wiros/src/wiros_csi_node/launch/basic.launch'
 
 # Print the values to verify (optional)
 echo "Endpoint Address: $endpointAddress"
