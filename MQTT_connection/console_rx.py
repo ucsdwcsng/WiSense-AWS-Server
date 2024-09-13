@@ -313,7 +313,7 @@ if __name__ == '__main__':
                 print("cmd handled")
                 new_cmd=False
             else:
-                print("no message yet.")
+                print(f"--------------------------------------------\nno message from console yet. \n--------------------------------------------")
             
             time.sleep(3)
         except KeyboardInterrupt as e:
