@@ -17,7 +17,7 @@ class _Const:
     DB_NAME = "wiros_csi"
     # AWS_ACCESS_KEY_ID = ""
     # AWS_SECRET_ACCESS_KEY = ""
-    BUCKET_NAME = "wiros-csi "
+    BUCKET_NAME = "wiros-csi"
     SERVER_AREA = "us-west-1"
     LOCAL_COPY = True
     PARTITION_KEY = "txmac"
