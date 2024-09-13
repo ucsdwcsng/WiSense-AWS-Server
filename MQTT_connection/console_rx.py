@@ -28,13 +28,16 @@ new_cmd = False
  
 class Processes():
     def __init__(self):
-        # self.roscore_process = None
+        self.roscore_process = None
         self.wiros_process = None
+        self.data_collector_process = None
         self.launch_file = os.getenv('launchFilePath')  
         self.status_map={
             'deviceId':os.getenv('thingName'),
             'wiros': 0,
-            'count':0
+            'data_collector':0,
+            'count':0,
+            'hz':0
         }
         self.deviceId = os.getenv('thingName')
         tree = ET.parse(self.launch_file)
@@ -68,8 +71,20 @@ class Processes():
     def start_wiros(self):
         self.wiros_process = wiros_subprocess.run_ros_launch(self.launch_file)
         self.status_map['wiros'] = 1
-        print(f'Successfully started')
+        print(f'Successfully started wiros')
 
+    def start_data_collector(self):
+        print(f'starting collector')
+        self.status_map['data_collector'] = 1
+        self.data_collector_process = wiros_subprocess.start_collector()
+
+    def stop_data_collector(self):
+        pgid = os.getpgid(self.data_collector_process.pid)
+        os.killpg(pgid, signal.SIGINT)
+
+        self.data_collector_process.wait()
+        self.status_map['data_collector'] = 0
+        print(f'Successfully started data collector')
 
     def stop_wiros(self):
         # Retrieve the PID of the terminal and terminate
@@ -77,7 +92,7 @@ class Processes():
         os.killpg(pgid, signal.SIGINT)
 
         self.wiros_process.wait()  
-        print("roscore and wiros has been terminated.")
+        print("wiros has been terminated.")
         self.status_map['wiros'] = 0
 
 # Callback when connection is accidentally lost.
@@ -161,6 +176,7 @@ def cmd_parser(json_cmd):
         else: 
             warning_msg= 'cannot change param while wiros is running'
             publish_warning(warning_msg)
+            
 
     if "stop_wiros" in json_cmd and json_cmd["stop_wiros"] == 1:
         if process_console.status_map["wiros"] == 1:
@@ -175,6 +191,22 @@ def cmd_parser(json_cmd):
             process_console.start_wiros()
         else:
             print('already started')
+
+    if "stop_data_collector" in json_cmd and json_cmd["stop_data_collector"] == 1:
+        if process_console.status_map["data_collector"] == 1:
+            print('stopping data collector...')
+            process_console.stop_data_collector()
+        else:
+            print('already stopped')
+
+    if "start_data_collector" in json_cmd and json_cmd["start_data_collector"] == 1:
+        if process_console.status_map["data_collector"] == 1:
+            print('already started')
+        # elif process_console.status_map['wiros'] == 0:
+        #     publish_warning('need wiros started first!')
+        else:
+            process_console.start_data_collector()
+            print('starting data collector...')
 
     # if "change_params" in json_cmd:
     #     if process_console.status_map['wiros'] == 0:

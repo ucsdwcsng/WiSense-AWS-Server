@@ -14,10 +14,10 @@ class _Const:
     ROS_TOPIC = "csi_server/csi"
     COL_PER_ROW = 2048
     ROW_PER_FILE = 100
-    DB_NAME = "test_demo"
+    DB_NAME = "wiros_csi"
     # AWS_ACCESS_KEY_ID = ""
     # AWS_SECRET_ACCESS_KEY = ""
-    BUCKET_NAME = "test0904"
+    BUCKET_NAME = "wiros-csi "
     SERVER_AREA = "us-west-1"
     LOCAL_COPY = True
     PARTITION_KEY = "txmac"
