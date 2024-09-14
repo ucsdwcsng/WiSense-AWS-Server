@@ -14,7 +14,7 @@ class _Const:
     MAX_BATCH_ELEMENT_COUNT = 25
     ROS_TOPIC = "csi_server/csi"
     COL_PER_ROW = 2048
-    ROW_PER_FILE = 100
+    ROW_PER_FILE = 1000
     DB_NAME = "wiros_csi"
     # AWS_ACCESS_KEY_ID = ""
     # AWS_SECRET_ACCESS_KEY = ""
