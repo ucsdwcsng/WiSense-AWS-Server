@@ -110,6 +110,10 @@ BUCKET_NAME = "your bucket name"
 SERVER_AREA = "your server area"
 ```
 
+#### Step 7 (Recommend Environment Setup with Docker): 
+
+ - [Docker for WiRos](https://github.com/ucsdwcsng/WiROS-Docker)
+
 ## Usage Examples
 
 ### Collecting CSI and upload to the cloud
