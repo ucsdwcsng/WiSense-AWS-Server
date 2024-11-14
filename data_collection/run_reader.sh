@@ -11,6 +11,10 @@ fi
 
 
 mkdir -p binary_data
+AWS_ACCESS_KEY_ID=$(aws configure get default.aws_access_key_id)
+AWS_SECRET_ACCESS_KEY=$(aws configure get default.aws_secret_access_key)
 
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
 # Run the Python script
 python3 data_reader.py

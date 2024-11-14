@@ -33,6 +33,8 @@ def get_DB_items():
                                 & Key(f'{CONST.SORT_KEY}').between(CONST.SORT_KEY_LOWER_BOUND, CONST.SORT_KEY_UPPER_BOUND)
     )
 
+    
+
     return response
 
 def create_file_list(items):
@@ -135,14 +137,15 @@ if __name__ == '__main__':
     if (len(items) <= 0):
         print("no items found")
         sys.exit(0)
-    write_csv(items)
     binary_files_dict = create_file_list(items)
     if (CONST.DOWNLOAD_NEEDED_FILES):
         download_needed_files(binary_files_dict)
+    # TODO: 
     items = add_csi_to_entries(items)
-    for each in items:
-        print(each, end=f'\n\n\n\n')
+    write_csv(items)
     print(f'{len(items)} items found, ')
+    # for each in items:
+    #     print(each, end=f'\n\n\n\n')
 
     
     # response.pop('Items')

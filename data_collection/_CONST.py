@@ -16,17 +16,19 @@ class _Const:
     COL_PER_ROW = 2048
     ROW_PER_FILE = 1000
     DB_NAME = "wiros_csi"
-    # AWS_ACCESS_KEY_ID = ""
-    # AWS_SECRET_ACCESS_KEY = ""
     BUCKET_NAME = "wiros-csi"
     SERVER_AREA = "us-west-1"
     LOCAL_COPY = True
     PARTITION_KEY = "txmac"
-    PARTITION_KEY_VALUE = "6a:79:7e:67:48:38"
+    PARTITION_KEY_VALUE = "ac:37:43:de:62:e7"
     SORT_KEY = "time_stamp"
-    SORT_KEY_LOWER_BOUND = 1725492679
-    SORT_KEY_UPPER_BOUND = 1725492699
-    DEVICE_NAME = "wiros_desktop"
+    SORT_KEY_LOWER_BOUND = 1731544658
+    SORT_KEY_UPPER_BOUND = 1731544678
+    DEVICE_NAME = "wiros_desktop1"
     CSV_FOR_NEEDED_FILES = True
-    DOWNLOAD_NEEDED_FILES = True
+    DOWNLOAD_NEEDED_FILES = False
     BINARY_FILES_FOLDER = "binary_data"
+        
+    # Don't use these to input keys! Your keys should be setup in MQTT_setup.sh
+    # AWS_ACCESS_KEY_ID = ""
+    # AWS_SECRET_ACCESS_KEY = ""
